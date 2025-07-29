@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Slider with Dots</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playwrite+PL:wght@100..400&display=swap');
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+        font-family: "Playwrite PL", cursive;
+      overflow: hidden;
+    }
+
+    .slider-wrapper {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .overlay {
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .slider-content {
+      position: relative;
+      z-index: 2;
+      color: white;
+      text-align: center;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 0 20px;
+    }
+    .slider-content h1 {
+      font-size: 3rem;
+     
+    }
+    .slider-content p {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+    .slider-image {
+      width: 300px;
+      height: 400px;
+      margin: 30px auto;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+    .slider-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .dot-container {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 5;
+    }
+    .dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff , #999999);
+  box-shadow: 0 0 4px rgba(255,255,255,0.4);
+  position: relative;
+}
+
+.dot:hover {
+  transform: scale(1.4);
+  box-shadow: 0 0 8px rgba(255,255,255,0.8);
+  background: radial-gradient(circle, #ffffff 50%, #cccccc);
+}
+
+.dot.active {
+  background: linear-gradient(135deg, #648686, #7c969f);
+  box-shadow: 0 0 12px #637777, 0 0 20px #7f9da7;
+  transform: scale(1.6);
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="slider-wrapper" id="sliderWrapper">
+    <div class="overlay"></div>
+    <div class="slider-content">
+      <h1 id="slideTitle">Welcome to Nature</h1>
+      <p id="slideText">Experience the beauty of the wild outdoors</p>
+      <div class="slider-image">
+        <img id="slideImage"  alt="Slide">
+      </div>
+    </div>
+
+    <div class="dot-container" id="dotContainer"></div>
+  </div>
+
+  <script>
+   const slides = [
+  {
+    bg: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+    title: "Welcome to Nature",
+    text: "Experience the beauty of the wild outdoors",
+    img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=300&q=80"
+  },
+  {
+    bg: "https://images.unsplash.com/photo-1493612276216-ee3925520721?auto=format&fit=crop&w=1200&q=80",
+    title: "City Adventures",
+    text: "Explore the lights and life of modern cities",
+    img: "https://images.unsplash.com/photo-1493612276216-ee3925520721?auto=format&fit=crop&w=300&q=80"
+  },
+  {
+    bg: "https://images.unsplash.com/photo-1516972810927-80185027ca84?auto=format&fit=crop&w=1200&q=80",
+    title: "Peaceful Wildlife",
+    text: "Meet the amazing creatures of our world",
+    img: "https://images.unsplash.com/photo-1516972810927-80185027ca84?auto=format&fit=crop&w=300&q=80"
+  },
+{
+  bg: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80",
+  title: "Golden Deserts",
+  text: "Find magic and mystery in the desert sands",
+  img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=300&q=80"
+}
+
+];
+
+
+    let current = 0;
+    const wrapper = document.getElementById('sliderWrapper');
+    const title = document.getElementById('slideTitle');
+    const text = document.getElementById('slideText');
+    const img = document.getElementById('slideImage');
+    const dotContainer = document.getElementById('dotContainer');
+
+    function showSlide(index) {
+      const slide = slides[index];
+      wrapper.style.backgroundImage = `url('${slide.bg}')`;
+      title.textContent = slide.title;
+      text.textContent = slide.text;
+      img.src = slide.img;
+
+      updateDots();
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === current);
+      });
+    }
+
+    function goToSlide(index) {
+      current = index;
+      showSlide(current);
+    }
+
+    function generateDots() {
+      slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        dot.onclick = () => goToSlide(i);
+        dotContainer.appendChild(dot);
+        
+      });
+    }
+
+    function autoSlide() {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    }
+
+    generateDots();
+    showSlide(current);
+    setInterval(autoSlide, 5000);
+  </script>
+</body>
+</html>
